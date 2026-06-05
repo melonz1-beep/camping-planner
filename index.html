@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Camping Planner & Packing List</title>
+<link rel="manifest" href="./manifest.json"><link rel="icon" href="./mountain-icon-192.png" type="image/png"><link rel="apple-touch-icon" href="./mountain-icon-192.png">
+<meta name="theme-color" content="#2f5d44">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#1f3b2d;color:white}header{background:#2f5d44;padding:20px;text-align:center;font-size:28px;font-weight:bold}.subtitle{font-size:16px;font-weight:normal;margin-top:8px;opacity:.9}.tabs{display:flex;overflow-x:auto;background:#274936;padding:10px;gap:10px;position:sticky;top:0;z-index:5}.tabs button{background:#f4c14a;border:none;padding:10px 16px;border-radius:12px;font-weight:bold;cursor:pointer;white-space:nowrap;color:#1f3b2d}.page{display:none;padding:16px}.page.active{display:block}.card{background:#355b45;border-radius:20px;padding:16px;margin-bottom:18px;box-shadow:0 4px 12px rgba(0,0,0,.35)}.item{display:flex;align-items:center;gap:10px;margin:10px 0;background:rgba(255,255,255,.08);padding:10px;border-radius:12px}.item label{flex:1;font-weight:normal}.deleteBtn{background:#c9544d;color:white;border:none;border-radius:8px;padding:6px 9px;font-weight:bold}input[type=checkbox]{transform:scale(1.25);accent-color:#f4c14a}input[type=text]{width:100%;padding:11px;border:none;border-radius:10px;margin:6px 0 8px;font-size:15px}button.add{background:#f4c14a;border:none;padding:10px 14px;border-radius:10px;font-weight:bold;cursor:pointer;color:#1f3b2d}textarea{width:100%;min-height:180px;border:none;border-radius:14px;padding:12px;margin-top:10px;font-size:16px}.footer{text-align:center;padding:20px;opacity:.8}.small{font-size:13px;opacity:.85}
+</style>
+</head>
+<body>
+<header>🏔️ Camping Planner<div class="subtitle">Camping Planner & Packing List</div></header>
+<div class="tabs">
+<button onclick="showTab('suppliesTab')">📋 Supplies</button><button onclick="showTab('clothingTab')">👕 Clothing</button><button onclick="showTab('toiletriesTab')">🪥 Toiletries</button><button onclick="showTab('medicalTab')">💊 Medical</button><button onclick="showTab('menuTab')">🍽️ Menu</button><button onclick="showTab('shoppingTab')">🛒 Shopping</button><button onclick="showTab('notesTab')">📝 Notes</button>
+</div>
+<div id="suppliesTab" class="page active"><div class="card"><h2>📋 Camping Supplies</h2><div id="supplies"></div><input type="text" id="supplyInput" placeholder="Add supply item"><button class="add" onclick="addItem('supplies','supplyInput')">Add</button></div></div>
+<div id="clothingTab" class="page"><div class="card"><h2>👕 Clothing</h2><div id="clothing"></div><input type="text" id="clothingInput" placeholder="Add clothing item"><button class="add" onclick="addItem('clothing','clothingInput')">Add</button></div></div>
+<div id="toiletriesTab" class="page"><div class="card"><h2>🪥 Toiletries</h2><div id="toiletries"></div><input type="text" id="toiletryInput" placeholder="Add toiletry item"><button class="add" onclick="addItem('toiletries','toiletryInput')">Add</button></div></div>
+<div id="medicalTab" class="page"><div class="card"><h2>💊 Medical Kit & Medicines</h2><div id="medical"></div><input type="text" id="medicalInput" placeholder="Add medical item"><button class="add" onclick="addItem('medical','medicalInput')">Add</button></div></div>
+<div id="menuTab" class="page"><div class="card"><h2>🍽️ Camping Menu Planner</h2><h3>Day 1</h3><textarea id="menuDay1" placeholder="Breakfast, lunch, dinner, snacks..."></textarea><h3>Day 2</h3><textarea id="menuDay2" placeholder="Breakfast, lunch, dinner, snacks..."></textarea><h3>Day 3</h3><textarea id="menuDay3" placeholder="Breakfast, lunch, dinner, snacks..."></textarea><h3>Extra Meal Notes</h3><textarea id="menuNotes" placeholder="Campfire meals, prep notes, cooler items..."></textarea></div></div>
+<div id="shoppingTab" class="page"><div class="card"><h2>🛒 Food Shopping List</h2><div id="shopping"></div><input type="text" id="shoppingInput" placeholder="Add grocery item"><button class="add" onclick="addItem('shopping','shoppingInput')">Add</button></div></div>
+<div id="notesTab" class="page"><div class="card"><h2>📝 Notes</h2><p class="small">Trip reminders, campsite details, reservations, packing notes, and anything else.</p><textarea id="generalNotes" placeholder="Trip reminders, campsite info, reservations, packing notes..."></textarea></div></div>
+<div class="footer">Mountain Edition Camping Planner • Saves after refresh</div>
+<script>
+const defaultLists={supplies:["Tent","Lantern","Sleeping Bags","Camp Chairs","Cooler & Ice"],clothing:["Hoodie","Rain Jacket","Extra Socks","Pajamas","Swimsuit"],toiletries:["Toothbrush","Toothpaste","Soap","Wet Wipes","Towels"],medical:["Bandages","Pain Reliever","Prescription Medications","Allergy Medicine","Antibiotic Ointment"],shopping:["Hot Dogs","Eggs","Coffee","Ice","Snacks"]};
+function showTab(tabId){document.querySelectorAll('.page').forEach(page=>page.classList.remove('active'));document.getElementById(tabId).classList.add('active');}
+function saveLists(){const data={};Object.keys(defaultLists).forEach(section=>{data[section]=[];document.querySelectorAll("#"+section+" .item").forEach(item=>{data[section].push({text:item.querySelector("label").textContent,checked:item.querySelector("input").checked});});});localStorage.setItem("campingPlannerLists",JSON.stringify(data));}
+function createCheckbox(containerId,text,checked=false){const div=document.createElement("div");div.className="item";const checkbox=document.createElement("input");checkbox.type="checkbox";checkbox.checked=checked;checkbox.addEventListener("change",saveLists);const label=document.createElement("label");label.textContent=text;const del=document.createElement("button");del.className="deleteBtn";del.textContent="×";del.onclick=function(){div.remove();saveLists();};div.appendChild(checkbox);div.appendChild(label);div.appendChild(del);document.getElementById(containerId).appendChild(div);}
+function addItem(section,inputId){const input=document.getElementById(inputId);const value=input.value.trim();if(value!==""){createCheckbox(section,value,false);input.value="";saveLists();}}
+function loadLists(){const saved=localStorage.getItem("campingPlannerLists");const data=saved?JSON.parse(saved):null;Object.keys(defaultLists).forEach(section=>{const items=data&&data[section]?data[section]:defaultLists[section].map(text=>({text:text,checked:false}));items.forEach(item=>createCheckbox(section,item.text,item.checked));});}
+function saveField(id){localStorage.setItem("campingPlanner_"+id,document.getElementById(id).value);}
+function loadFields(){["menuDay1","menuDay2","menuDay3","menuNotes","generalNotes"].forEach(id=>{const el=document.getElementById(id);const saved=localStorage.getItem("campingPlanner_"+id);if(saved!==null){el.value=saved;}el.addEventListener("input",()=>saveField(id));});}
+loadLists();loadFields();
+</script>
+</body>
+</html>
